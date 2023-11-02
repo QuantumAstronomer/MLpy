@@ -124,8 +124,16 @@ class KMeans():
         initial_centroids = data[np.random.choice(data.shape[0], size = 1)]
 
         for i in range(1, self.cluster_count):
-            distances = np.min(self.metric(data, initial_centroids, **self.metric_kwargs), axis = 1)**2
-            probabilities = distances / np.sum(distances)
+
+            ## Compute distance (squared) to the nearest already picked centroid for each datapoint
+            ## No need to mask datapoints that are centroids as their probability will be set to
+            ## zero as their minimum distance is zero.
+            distances = np.nanmin(self.metric(data, initial_centroids, **self.metric_kwargs), axis = 1)**2
+
+            ## Turn the distances in to proper probabilities by making them sum to one.
+            probabilities = distances / np.nansum(distances)
+
+            ## And pick the new data point at random and add it to the list of centroids.
             next_centroid = data[np.random.choice(data.shape[0], size = 1, p = probabilities)]
             initial_centroids = np.vstack([initial_centroids, next_centroid])
 
