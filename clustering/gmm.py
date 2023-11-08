@@ -6,8 +6,8 @@ from scipy.special import logsumexp
 from scipy.stats import multivariate_normal
 from typing import Literal
 
-from .kmeans import KMeans
-from ..metrics import euclidean
+from ..clustering.kmeans import KMeans
+from ..metrics.distances import euclidean
 
 
 class GMM():
