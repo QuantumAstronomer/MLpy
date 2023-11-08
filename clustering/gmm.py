@@ -19,7 +19,7 @@ class GMM():
 
     The current implementation employs the Expectation-Maximization algorithm and uses logarithmic
     probabilities for enhanced numerical stability, i.e. in some circumstances the non-logarithmic
-    probabilities will be so small and therefore rounded to zero due to machine precision in 
+    probabilities will be so small and therefore rounded to zero due to machine precision in
     the floating point numbers.
 
     Parameters:
@@ -41,11 +41,11 @@ class GMM():
         are positive semi-definite at all times.
 
         covariance_type ({'full', 'tied', 'diagonal', 'spherical'}, default = 'full'):
-        Type of covariances to use for the components, i.e. whether they are fully free or 
+        Type of covariances to use for the components, i.e. whether they are fully free or
         restricted in some way.
 
-        initializtion_method ({'k-means++', 'k-means', 'random', 'random-data'}, 
-                              default = 'k-means++'): 
+        initializtion_method ({'k-means++', 'k-means', 'random', 'random-data'},
+                              default = 'k-means++'):
         Method used for generating the initial means and covariances through responsibilites:
             - k-means++: Generate the responsibilities based on data points selected using the
               k-means++ algorithm. In total a number of points equal to the number of clusters
@@ -60,13 +60,13 @@ class GMM():
     '''
 
 
-    def __init__(self, cluster_count: int, 
-                 max_iteration: int = 30, 
+    def __init__(self, cluster_count: int,
+                 max_iteration: int = 30,
                  tolerance: float = 1e-4,
                  covariance_regularization: float = 1e-6,
                  covariance_type: Literal['full', 'tied', 'diagonal', 'spherical'] = 'full',
                  initialization_method: Literal['k-means++', 'k-means', 'random', 'random-data'] = 'k-means++') -> None:
-        
+
         self.cluster_count: int               = cluster_count
         self.max_iteration: int               = max_iteration
         self.tolerance: float                 = tolerance
@@ -74,12 +74,12 @@ class GMM():
 
         if covariance_type not in ['full', 'tied', 'diagonal', 'spherical']:
             raise ValueError(f'Provided covariance type ({covariance_type}) is not supported...')
-        
+
         self.covariance_type: str = covariance_type
 
         if initialization_method not in ['k-means++', 'k-means', 'random', 'random-data']:
             raise ValueError(f'Provided initialization method ({initialization_method}) not supported.')
-        
+
         self.initialization_method: str = initialization_method
 
 
@@ -112,7 +112,7 @@ class GMM():
             means = np.vstack([means, next_mean])
 
         return index
-    
+
 
     def initialize(self, data: npt.NDArray[np.float_]) -> None:
         '''
@@ -127,12 +127,12 @@ class GMM():
         if self.sample_count < self.cluster_count:
             raise ValueError(f'Number of clusters to form ({self.cluster_count}) exceeds number of data samples({self.sample_count})...'
                              f'Reduce the number of clusters or provide additional datapoints.')
-        
+
         responsiblities = self._initialize_responsibilities(data = data)
 
         self.weights, self.means, self.covariances = self._estimate_gaussian_params(data = data, responsibilities = responsiblities)
         self.weights /= np.nansum(self.weights, keepdims = True)
-    
+
 
     def _initialize_responsibilities(self, data: npt.NDArray[np.float_]) -> npt.NDArray[np.float_]:
         '''
@@ -142,7 +142,7 @@ class GMM():
         Responsibilities are basically measures of the probability that a given datapoint belongs
         to a specific cluster.
         '''
-        
+
         if self.initialization_method == 'random':
             ## Initialize the distribution of responsibilities completely at random.
             responsibilities = np.random.uniform(size = (self.sample_count, self.cluster_count))
@@ -176,15 +176,15 @@ class GMM():
             responsibilities[np.arange(self.sample_count), labels] = 1
 
             return responsibilities
-        
+
         else:
             raise ValueError(f'Provided initialization method ({self.initialization_method}) not supported.')
 
-    
+
     def _estimate_gaussian_params(self, data: npt.NDArray[np.float_], responsibilities: npt.NDArray[np.float_])\
                                   -> tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
         '''
-        Given the data and the responsibilities, estimate the parameters of the Gaussian 
+        Given the data and the responsibilities, estimate the parameters of the Gaussian
         distributions. Covariances can be determined in a few ways, depending on the user input
         chosen, i.e. full, tied, spherical, or diagonal.
         '''
@@ -198,7 +198,7 @@ class GMM():
         ## Estimate the covariance given the type of covariances to be used.
 
         if self.covariance_type == 'full':
-            
+
             ## In full covariances, each component has its own covariance matrix which is
             ## completely independent from the other components.
 
@@ -231,7 +231,7 @@ class GMM():
             covariances = average_data_sq - 2 * average_data_means + average_means_sq + self.covariance_regularization
 
             return weights, means, covariances
-        
+
         if self.covariance_type == 'spherical':
 
             ## And finally for spherical, it is similar to diagonal: each component has its own
@@ -244,10 +244,10 @@ class GMM():
             covariances = np.nanmean(average_data_sq - 2 * average_data_means + average_means_sq, axis = 1) + self.covariance_regularization
 
             return weights, means, covariances
-        
+
         else:
             raise ValueError(f'Provided covariance type ({self.covariance_type}) is not supported...')
-        
+
 
     def _log_prob(self, data: npt.NDArray[np.float_]) -> npt.NDArray[np.float_]:
         '''
@@ -267,14 +267,14 @@ class GMM():
 
             likelihood[:, k] = distribution.logpdf(x = data)
         return likelihood
-    
+
 
     def _log_weights(self) -> npt.NDArray[np.float_]:
         '''
         This is a convenience-function to quickly obtain the logarithm of the weights.
         '''
         return np.log(self.weights)
-    
+
 
     def _log_weighted_probs(self, data: npt.NDArray[np.float_]) -> npt.NDArray[np.float_]:
         '''
@@ -282,7 +282,7 @@ class GMM():
         modified by the weights of each cluster. These are not normalised, however.
         '''
         return self._log_prob(data = data) + self._log_weights()
-    
+
 
     def _log_prob_resp(self, data: npt.NDArray[np.float_]) -> npt.NDArray[np.float_]:
         '''
@@ -296,7 +296,7 @@ class GMM():
 
         log_resp = weighted_log_prob - log_prob_norm
         return log_resp
-    
+
 
     def expectation(self, data: npt.NDArray[np.float_]) -> npt.NDArray[np.float_]:
         '''
@@ -304,7 +304,7 @@ class GMM():
         responsibilities for all the clusters.
         '''
         return self._log_prob_resp(data = data)
-    
+
 
     def maximization(self, data: npt.NDArray[np.float_], log_resp: npt.NDArray[np.float_]) -> None:
         '''
@@ -361,7 +361,7 @@ class GMM():
 
             if mean_converge and covariance_converge:
                 break
-        
+
 
     def predict(self, data: npt.NDArray[np.float_]) -> npt.NDArray[np.int_]:
         '''
@@ -370,7 +370,7 @@ class GMM():
         the new data should not change the clustering.
         '''
         return np.argmax(self.expectation(data = data), axis = 1)
-    
+
 
     def fit_predict(self, data: npt.NDArray[np.float_]) -> npt.NDArray[np.int_]:
         '''
