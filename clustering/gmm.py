@@ -172,7 +172,7 @@ class GMM():
             ## While this gives the most accurate starting point, it is also computationally
             ## the most expensive option.
             responsibilities = np.zeros(shape = (self.sample_count, self.cluster_count))
-            labels = KMeans(cluster_count = self.cluster_count, initialization_count = 1, algorithm = 'hartigan-wong', max_iteration = 3).fit_predict(data = data)
+            labels = KMeans(cluster_count = self.cluster_count, initialization_count = 1, algorithm = 'hartigan-wong', max_iteration = 3).fit_predict(X = data)
             responsibilities[np.arange(self.sample_count), labels] = 1
 
             return responsibilities
@@ -316,7 +316,7 @@ class GMM():
         self.weights /= np.nansum(self.weights)
 
 
-    def fit(self, data: npt.NDArray[np.float_]) -> None:
+    def fit(self, X: npt.NDArray[np.float_], y = None) -> None:
         '''
         Perform the fitting procedure given the data at hand. Convergence is claimed once the
         relative changes in the recorded means and covariances no longer exceed the tolerance
@@ -324,7 +324,7 @@ class GMM():
         '''
 
         ## Start by initializing the weights, means, and covariances.
-        self.initialize(data = data)
+        self.initialize(data = X)
 
         print(self.covariance_type)
 
@@ -339,8 +339,8 @@ class GMM():
             previous_covariances = cp.deepcopy(self.covariances)
 
             ## Perform the EM-step.
-            log_resp = self.expectation(data = data)
-            self.maximization(data = data, log_resp =log_resp)
+            log_resp = self.expectation(data = X)
+            self.maximization(data = X, log_resp =log_resp)
 
             ## Stopping criterion is calculated using the L2 norm of the difference between the
             ## means and covariances of the previous step compared to the current step.
@@ -363,25 +363,25 @@ class GMM():
                 break
 
 
-    def predict(self, data: npt.NDArray[np.float_]) -> npt.NDArray[np.int_]:
+    def predict(self, X: npt.NDArray[np.float_]) -> npt.NDArray[np.int_]:
         '''
         Assuming the GMM object has been fitted, return the labels given the data. This can be
         called when new data is available which is assumed to fall in the same clustering, i.e.
         the new data should not change the clustering.
         '''
-        return np.argmax(self.expectation(data = data), axis = 1)
+        return np.argmax(self.expectation(data = X), axis = 1)
 
 
-    def fit_predict(self, data: npt.NDArray[np.float_]) -> npt.NDArray[np.int_]:
+    def fit_predict(self, X: npt.NDArray[np.float_], y = None) -> npt.NDArray[np.int_]:
         '''
         Perform the fitting and prediction in a single go, i.e. return the labels of the data given
         the Gaussian components that have been found.
         '''
 
-        self.fit(data = data)
+        self.fit(X = X)
 
         ## Perform a final expectation step so fit_predict results are consistent with calling
         ## fit followed by predict.
-        log_resp = self.expectation(data = data)
+        log_resp = self.expectation(data = X)
 
         return np.argmax(log_resp, axis = 1)

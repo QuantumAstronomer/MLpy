@@ -107,14 +107,14 @@ class DBScan():
                     self._expand_cluster(sample_index = neighbour, neighbours = neighbourhood_of_neighbour, cluster_label = cluster_label)
 
 
-    def fit(self, data: npt.NDArray[np.float_]) -> None:
+    def fit(self, X: npt.NDArray[np.float_], y = None) -> None:
         '''
         This method performs the actual clustering following the DBScan algorithm. It only requires
         the input data and the, earlier specified, epsilon and minimum_sample_points parameters
         which are stored internally.
         '''
 
-        self.data: npt.NDArray[np.float_] = cp.deepcopy(data)
+        self.data: npt.NDArray[np.float_] = cp.deepcopy(X)
         self.labels: npt.NDArray[np.int_] = np.zeros(shape = (self.data.shape[0], ), dtype = np.int_)
 
         cluster_label: int = 1
@@ -145,12 +145,12 @@ class DBScan():
                     cluster_label += 1
 
 
-    def fit_predict(self, data: npt.NDArray[np.float_]) -> npt.NDArray[np.int_]:
+    def fit_predict(self, X: npt.NDArray[np.float_], y = None) -> npt.NDArray[np.int_]:
         '''
         Convenience method to perform the clustering and return the labels as well.
         '''
 
-        self.fit(data = data)
+        self.fit(X = X)
         return self.labels
 
 

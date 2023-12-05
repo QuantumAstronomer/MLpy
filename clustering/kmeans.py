@@ -291,7 +291,7 @@ class KMeans():
             raise ValueError(f'Provided algorithm ({self.algorithm}) not supported. Choose from [lloyd, macqueen, or hartigan-wong]')
     
 
-    def fit(self, data: npt.NDArray[np.float_]) -> None:
+    def fit(self, X: npt.NDArray[np.float_], y = None) -> None:
         '''
         Performs multiple fitting procedures, according to the number of initializations that are
         to be performed. It keeps track of the best fitting one according to the inertia it has for
@@ -299,13 +299,13 @@ class KMeans():
         corresponding centroids of course.
         '''
 
-        best_centroids = np.empty(shape = (self.cluster_count, data.shape[1]))
+        best_centroids = np.empty(shape = (self.cluster_count, X.shape[1]))
         best_inertia = np.inf
         best_iterations = np.inf
 
         for _ in range(self.initialization_count):
-            centroids, iterations = self._single_fit(data = data)
-            inertia = self._get_inertia(data = data, centroids = centroids)
+            centroids, iterations = self._single_fit(data = X)
+            inertia = self._get_inertia(data = X, centroids = centroids)
 
             if inertia < best_inertia:
                 best_inertia = inertia
@@ -315,13 +315,13 @@ class KMeans():
         self.centroids = best_centroids
         self.inertia = best_inertia
         self.convergence_iterations = best_iterations
-        self.labels = np.argmin(a = self.metric(data, self.centroids, **self.metric_kwargs), axis = 1)
+        self.labels = np.argmin(a = self.metric(X, self.centroids, **self.metric_kwargs), axis = 1)
 
 
-    def fit_predict(self, data: npt.NDArray[np.float_]) -> npt.NDArray[np.int_]:
+    def fit_predict(self, X: npt.NDArray[np.float_], y = None) -> npt.NDArray[np.int_]:
         '''
         Convenience method to perform the clustering and return the labels as well.
         '''
 
-        self.fit(data = data)
+        self.fit(X = X)
         return self.labels
