@@ -317,6 +317,10 @@ class KMeans():
         self.convergence_iterations = best_iterations
         self.labels = np.argmin(a = self.metric(X, self.centroids, **self.metric_kwargs), axis = 1)
 
+    
+    def predict(self, X: npt.NDArray[np.float_]) -> npt.NDArray[np.int_]:
+        return np.argmin(a = self.metric(X, self.centroids, **self.metric_kwargs), axis = 1)
+
 
     def fit_predict(self, X: npt.NDArray[np.float_], y = None) -> npt.NDArray[np.int_]:
         '''
