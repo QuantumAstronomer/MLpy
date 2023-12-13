@@ -5,7 +5,7 @@ import numpy as np
 from numpy import typing as npt
 from typing import Any, Callable
 
-from ..metrics import euclidean
+from ..metrics.distances import euclidean
 
 
 class DBScan():
