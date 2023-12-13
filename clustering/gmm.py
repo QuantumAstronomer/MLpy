@@ -11,7 +11,6 @@ from ..metrics.distances import euclidean
 
 
 class GMM():
-
     '''
     Class to perform clustering based on the idea of a Gaussian Mixutre Model of the data. It thus
     separates data based on Gaussian distributions that are fitted to the data. This does require
