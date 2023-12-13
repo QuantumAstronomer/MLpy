@@ -6,7 +6,7 @@ from scipy.linalg import qr, svd
 from scipy.sparse.linalg import eigs
 from typing import Any, Callable, Literal
 
-from ..metrics import euclidean
+from ..metrics.distances import euclidean
 from ..clustering import KMeans
 
 
