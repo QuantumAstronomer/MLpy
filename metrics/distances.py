@@ -24,12 +24,14 @@ def euclidean(X: npt.NDArray[np.float_], Y: npt.NDArray[np.float_] | None = None
 
     Parametrs:
     ===============================================================================================
+
         X, Y (numpy ndarray): Coordinate arrays containing N and M P-dimensional points for which 
         to calculate the pairwise Euclidean distances. If Y is None the function is called with
         Y = X, i.e. the distances between all the coordinates in X are calculated.
 
     Returns:
     ===============================================================================================
+
         numpy ndarray: An N x M (or N x N) array containing the Euclidean separations between each
         pair of coordinates in the input arrays.
     '''
@@ -76,12 +78,14 @@ def manhattan(X: npt.NDArray[np.float_], Y: npt.NDArray[np.float_] | None = None
 
     Parametrs:
     ===============================================================================================
+
         X, Y (numpy ndarray): Coordinate arrays containing N and M P-dimensional points for which 
         to calculate the pairwise Manhattan distances. If Y is None the function is called with
         Y = X, i.e. the distances between all the coordinates in X are calculated.
 
     Returns:
     ===============================================================================================
+
         numpy ndarray: An N x M (or N x N) array containing the Manhattan separations between each
         pair of coordinates in the input arrays.
     '''
@@ -128,12 +132,14 @@ def chebyshev(X: npt.NDArray[np.float_], Y: npt.NDArray[np.float_] | None = None
 
     Parametrs:
     ===============================================================================================
+
         X, Y (numpy ndarray): Coordinate arrays containing N and M P-dimensional points for which 
         to calculate the pairwise Chebyshev distances. If Y is None the function is called with
         Y = X, i.e. the distances between all the coordinates in X are calculated.
 
     Returns:
     ===============================================================================================
+
         numpy ndarray: An N x M (or N x N) array containing the Chebyshev separations between each
         pair of coordinates in the input arrays.
     '''
@@ -180,6 +186,7 @@ def minkowski(X: npt.NDArray[np.float_], Y: npt.NDArray[np.float_] | None = None
 
     Parametrs:
     ===============================================================================================
+
         X, Y (numpy ndarray): Coordinate arrays containing N and M P-dimensional points for which 
         to calculate the pairwise Minkowski distances. If Y is None the function is called with
         Y = X, i.e. the distances between all the coordinates in X are calculated.
@@ -191,6 +198,7 @@ def minkowski(X: npt.NDArray[np.float_], Y: npt.NDArray[np.float_] | None = None
 
     Returns:
     ===============================================================================================
+
         numpy ndarray: An N x M (or N x N) array containing the Minkowski separations between each
         pair of coordinates in the input arrays.
     '''
@@ -239,12 +247,14 @@ def cosine(X: npt.NDArray[np.float_], Y: npt.NDArray[np.float_] | None = None) -
 
     Parametrs:
     ===============================================================================================
+
         X, Y (numpy ndarray): Coordinate arrays containing N and M P-dimensional points for which 
         to calculate the pairwise Cosine distances. If Y is None the function is called with
         Y = X, i.e. the distances between all the coordinates in X are calculated.
 
     Returns:
     ===============================================================================================
+    
         numpy ndarray: An N x M (or N x N) array containing the Cosine separations between each
         pair of coordinates in the input arrays.
     '''
